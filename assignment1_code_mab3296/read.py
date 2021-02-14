@@ -1,26 +1,40 @@
 # Read input file
 def readInput(fname):
     filedata = open(fname, 'r')
-    mapping = {}
+    _input = {}
 
     for route in filedata:
+        
+        # Remove leading/trailing characters
         route = route.lstrip()
         route = route.rstrip()
+
+        # Loop through all the city-to-city routes
         if route != 'END OF INPUT':
-            citydist = route.split(' ')
-            citydist[2] = float(citydist[2])
+            # If we havent reached the end, keep going
 
-            if citydist[0] in mapping:  # handle city 1 --> city 2
-                mapping[citydist[0]].append([citydist[1], citydist[2]])
-            else:
-                mapping[citydist[0]] = [[citydist[1], citydist[2]]]
+            # Tokenize by spaces
+            city_segment = route.split(' ')
 
-            if citydist[1] in mapping:  # handle city 2 --> city 1
-                mapping[citydist[1]].append([citydist[0], citydist[2]])
+            # Convert the distance string to float
+            city_segment[2] = float(city_segment[2])
+
+            # Handle the forward route (city A -> city B)
+            if city_segment[0] in _input:
+                _input[city_segment[0]].append( [city_segment[1], city_segment[2]] )
             else:
-                mapping[citydist[1]] = [[citydist[0], citydist[2]]]
+                _input[city_segment[0]] = [[city_segment[1], city_segment[2]]]
+
+            # Handle the backward route (city B -> city A)
+            if city_segment[1] in _input:
+                _input[city_segment[1]].append( [city_segment[0], city_segment[2]] )
+            else:
+                _input[city_segment[1]] = [[city_segment[0], city_segment[2]]]
         else:
-            return mapping
+            # If END OF INPUT is reached
+            return _input
+
+# end readInput()
 
 
 # Read heuristic file
@@ -29,11 +43,23 @@ def readHeuristic(fname):
     heuristic = {}
 
     for h in filedata:
+
+        # Remove leading/trailing characters
         h = h.lstrip()
         h = h.rstrip()
+
+        # Loop through all heuristic distances
         if h != 'END OF INPUT':
+            # If we haven't reached the end, keep going
+
+            # Tokenize by spaces
             data = h.split(' ')
+
+            # Convert heuristic distance string to float
             data[1] = float(data[1])
             heuristic[data[0]] = data[1]
         else:
+            # If END OF INPUT is reached
             return heuristic
+
+# end readHeuristic()

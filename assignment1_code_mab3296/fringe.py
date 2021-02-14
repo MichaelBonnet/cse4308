@@ -1,53 +1,78 @@
 # Node Generation Structure
-class nodestructure:
-    def __init__(self, prnt, state, g, d, f, Uninformed):
-        self.prnt = prnt
-        self.state = state
-        self.g = g
+class nodeStructure:
+    def __init__(self, parent, city, g, d, f, uninformed):
+        self.parent = parent
+        self.city = city
+        self.g = g # g(n) = cost so far to reach n
         self.d = d
-        self.f = f
-        self.Uninformed = Uninformed
+        self.f = f # f(n) = g(n) + h(n) [h(n) being the heuristic]
+        self.uninformed = uninformed
+
+# end class nodeStructure
 
 
-    def __str__(self):
-        if self.Uninformed:
-            return self.state + ": g(n)= " +str(self.g) + ",d= " + str(self.d) + ",Parent ->{" + str(self.prnt) + "}"
-        else:
-            return self.state + ": g(n)= " +str(self.g) + ",d= " + str(self.d) + ", f(n) = " + str(self.f) + ", Parent ->{" + str(self.prnt) + "}"
+# uses map and heuristic to generate next nodes
+def expandNode(node, map, heuristic, SearchType):
+    # Map out the options to go from the current city
+    actions = map[node.city]
+    
+    # list of to-be-newly-found nodes adjacent to the node being expanded
+    next_nodes = []
 
-
-# uses map and heuristic to generate successors
-def expandNode(node, map, h, SearchType):
-    actions = map[node.state]
-    successor = []
+    # Loop through each option
     for i in actions:
-        costtotal = node.g + i[1]
-        if node.Uninformed:
-            successor.append(nodestructure(node, i[0], costtotal, node.d + 1, 0, node.Uninformed))
+        # Add to g (cost thus far) the distance cost to go to the new city
+        cost = node.g + i[1]
+
+        # Add node depending on method being used
+        if node.uninformed:
+            # If uninformed, do so using no heuristic
+            next_nodes.append(nodeStructure(node, i[0], cost, node.d + 1, 0, node.uninformed))
         else:
-            successor.append(nodestructure(node, i[0], costtotal, node.d + 1, costtotal + h[i[0]], node.Uninformed))
-    return successor
+            # If informed, do so using the heuristic
+            next_nodes.append(nodeStructure(node, i[0], cost, node.d + 1, cost + heuristic[i[0]], node.uninformed))
+    return next_nodes
 
-
-# Get item
-def getkey(item, n):
-    return item[n]
+# end expandNode()
 
 
 # Reconstruct route from node
 def reconstruct(node, map, SearchType):
+    # List of strings that make up the route
     route = []
+
+    # Distance given current node cost thus far
     distance = node.g
+
+    # Loop back from current node through the start of the process
     while node is not None:
-        parent = node.prnt
-        if parent is not None:
-            act = (a for a in map[parent.state] if
-                   a[0] == node.state)
-            a=next(act)
-            route.append(parent.state + " to " + node.state + ", " + str(a[1]) + " km")
-        node = parent
+
+        # Hold the node's parent in temp variable
+        _parent = node.parent
+
+        # As long as the parent exists,
+        if _parent is not None:
+            # Generate distances back through the route, 
+            # only keeping those that apply to cities in the chain
+            steps = (s for s in map[_parent.city] if s[0] == node.city)
+
+            # Capture the distance of the last optimal step taken
+            s = next(steps)
+
+            # Add the last optimal step taken to the route
+            route.append(_parent.city + " to " + node.city + ", " + str(s[1]) + " km")
+
+        # update current node
+        node = _parent
+    # end of back loop
+
+    # We added to the route in reverse order, so we should reverse the list of strings
     route.reverse()
+
+    # Printing out the distance and route
     print("distance: " + str(distance) + " km")
     print("route:")
     for segment in route:
         print(segment)
+
+# end reconstruct()
