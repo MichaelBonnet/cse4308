@@ -1,9 +1,4 @@
-import sys
-import readinputfile as readInputFiles
-import heuristic as heu
-import operator
-
-#Node Structure
+# Node Generation Structure
 class nodestructure:
     def __init__(self, prnt, state, g, d, f, Uninformed):
         self.prnt = prnt
@@ -16,12 +11,13 @@ class nodestructure:
 
     def __str__(self):
         if self.Uninformed:
-            return self.state+": g(n)= "+str(self.g) + ",d= "+str(self.d)+",Parent ->{"+str(self.prnt)+"}"
+            return self.state + ": g(n)= " +str(self.g) + ",d= " + str(self.d) + ",Parent ->{" + str(self.prnt) + "}"
         else:
-            return self.state+": g(n)="+str(self.g)+",d= "+str(self.d)+", f(n) = "+str(self.f)+", Parent ->{"+str(self.prnt)+"}"
+            return self.state + ": g(n)= " +str(self.g) + ",d= " + str(self.d) + ", f(n) = " + str(self.f) + ", Parent ->{" + str(self.prnt) + "}"
 
- # uses map and heuristic   to generate successors
-def expandNode(node, map, h,SearchType):
+
+# uses map and heuristic to generate successors
+def expandNode(node, map, h, SearchType):
     actions = map[node.state]
     successor = []
     for i in actions:
@@ -32,12 +28,15 @@ def expandNode(node, map, h,SearchType):
             successor.append(nodestructure(node, i[0], costtotal, node.d + 1, costtotal + h[i[0]], node.Uninformed))
     return successor
 
-def getkey(item,n):
+
+# Get item
+def getkey(item, n):
     return item[n]
 
-# reconstruct the path from node
-def reconstruct(node, map,SearchType):
-    s = []
+
+# Reconstruct route from node
+def reconstruct(node, map, SearchType):
+    route = []
     distance = node.g
     while node is not None:
         parent = node.prnt
@@ -45,10 +44,10 @@ def reconstruct(node, map,SearchType):
             act = (a for a in map[parent.state] if
                    a[0] == node.state)
             a=next(act)
-            s.append(parent.state+" to "+node.state+ ", "+str(a[1])+" kms")
+            route.append(parent.state + " to " + node.state + ", " + str(a[1]) + " km")
         node = parent
-    s.reverse()
-    print("distance : " + str(distance))
-    print("route :")
-    for i in s:
-        print(i)
+    route.reverse()
+    print("distance: " + str(distance) + " km")
+    print("route:")
+    for segment in route:
+        print(segment)
