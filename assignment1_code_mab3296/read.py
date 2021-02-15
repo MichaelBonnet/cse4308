@@ -1,6 +1,10 @@
 # Read input file
 def readInput(fname):
+
+    # Open the file
     filedata = open(fname, 'r')
+
+    # Holding structures for the portions of graph
     _input = {}
 
     for route in filedata:
@@ -39,7 +43,11 @@ def readInput(fname):
 
 # Read heuristic file
 def readHeuristic(fname):
+
+    # Open the file
     filedata = open(fname, 'r')
+
+    # Holding structure for the heuristics
     heuristic = {}
 
     for h in filedata:

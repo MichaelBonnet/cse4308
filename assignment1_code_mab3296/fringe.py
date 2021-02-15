@@ -1,5 +1,5 @@
 # Node Generation Structure
-class nodeStructure:
+class nodeObject:
     def __init__(self, parent, city, g, d, f, uninformed):
         self.parent = parent
         self.city = city
@@ -8,7 +8,7 @@ class nodeStructure:
         self.f = f # f(n) = g(n) + h(n) [h(n) being the heuristic]
         self.uninformed = uninformed
 
-# end class nodeStructure
+# end class nodeObject
 
 
 # uses map and heuristic to generate next nodes
@@ -27,17 +27,17 @@ def expandNode(node, map, heuristic, SearchType):
         # Add node depending on method being used
         if node.uninformed:
             # If uninformed, do so using no heuristic
-            next_nodes.append(nodeStructure(node, i[0], cost, node.d + 1, 0, node.uninformed))
+            next_nodes.append(nodeObject(node, i[0], cost, node.d + 1, 0, node.uninformed))
         else:
             # If informed, do so using the heuristic
-            next_nodes.append(nodeStructure(node, i[0], cost, node.d + 1, cost + heuristic[i[0]], node.uninformed))
+            next_nodes.append(nodeObject(node, i[0], cost, node.d + 1, cost + heuristic[i[0]], node.uninformed))
     return next_nodes
 
 # end expandNode()
 
 
-# Reconstruct route from node
-def reconstruct(node, map, SearchType):
+# Create route from node
+def backtrace(node, map, SearchType):
     # List of strings that make up the route
     route = []
 
@@ -75,4 +75,4 @@ def reconstruct(node, map, SearchType):
     for segment in route:
         print(segment)
 
-# end reconstruct()
+# end backtrace()

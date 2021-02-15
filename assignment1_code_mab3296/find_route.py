@@ -44,11 +44,11 @@ def main():
 
     if uninformed:
         # If doing an uninformed search, start the fringe without the heuristic guide
-        fringe.append(fr.nodeStructure(None, sys.argv[2], 0, 0, 0, uninformed))
+        fringe.append(fr.nodeObject(None, sys.argv[2], 0, 0, 0, uninformed))
         nodesGenerated += 1 # We've just generated our first node, manually
     else:
         # If doing an informed search, start the fringe with the heuristic guide
-        fringe.append(fr.nodeStructure(None, sys.argv[2], 0, 0, heuristic[sys.argv[2]], uninformed))
+        fringe.append(fr.nodeObject(None, sys.argv[2], 0, 0, heuristic[sys.argv[2]], uninformed))
         nodesGenerated += 1 # We've just generated our first node, manually
 
     # list of closed nodes/unsuccessful cities
@@ -91,7 +91,7 @@ def main():
             # Then we're done
             print("nodes expanded: "  + str(nodesExpanded))
             print("nodes generated: " + str(nodesGenerated))
-            fr.reconstruct(node, map, nodesExpanded)
+            fr.backtrace(node, map, nodesExpanded)
             sys.exit() # had to do this because otherwise it would keep looping weirdly
     # end search loop
 
